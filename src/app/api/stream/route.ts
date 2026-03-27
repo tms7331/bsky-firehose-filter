@@ -62,6 +62,7 @@ export async function GET(request: Request) {
                 createdAt: post.createdAt,
                 uri: `at://${post.did}/app.bsky.feed.post/${post.rkey}`,
                 cid: post.cid,
+                ...(post.images && { images: post.images }),
               },
               author: {
                 did: post.did,

@@ -1,5 +1,11 @@
 import WebSocket from "ws";
 
+export interface PostImage {
+  alt: string;
+  thumb: string;
+  aspectRatio?: { width: number; height: number };
+}
+
 export interface JetstreamPost {
   did: string;
   rkey: string;
@@ -7,6 +13,7 @@ export interface JetstreamPost {
   createdAt: string;
   langs?: string[];
   cid: string;
+  images?: PostImage[];
 }
 
 export type BatchCallback = (batch: JetstreamPost[]) => void;
@@ -47,6 +54,29 @@ export class JetstreamSubscriber {
           // Filter for English posts with text
           const langs: string[] | undefined = record.langs;
           if (langs && langs.includes("en") && record.text) {
+            // Extract images from embeds
+            const embed = record.embed;
+            const imageEmbed =
+              embed?.$type === "app.bsky.embed.images"
+                ? embed
+                : embed?.media?.$type === "app.bsky.embed.images"
+                  ? embed.media
+                  : null;
+
+            const images: PostImage[] = [];
+            if (imageEmbed?.images) {
+              for (const img of imageEmbed.images) {
+                const ref = img.image?.ref?.$link;
+                if (ref) {
+                  images.push({
+                    alt: img.alt || "",
+                    thumb: `https://cdn.bsky.app/img/feed_thumbnail/plain/${msg.did}/${ref}@jpeg`,
+                    aspectRatio: img.aspectRatio,
+                  });
+                }
+              }
+            }
+
             this.buffer.push({
               did: msg.did,
               rkey: msg.commit.rkey,
@@ -54,6 +84,7 @@ export class JetstreamSubscriber {
               createdAt: record.createdAt,
               langs,
               cid: msg.commit.cid,
+              ...(images.length > 0 && { images }),
             });
 
             if (this.buffer.length >= this.batchSize) {

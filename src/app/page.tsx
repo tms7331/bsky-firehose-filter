@@ -153,9 +153,8 @@ export default function Home() {
 
         {/* content */}
         <div
-          className={`relative z-10 flex flex-col items-center justify-center h-full px-6 ${
-            phase === "exiting" ? "animate-hero-exit" : ""
-          }`}
+          className={`relative z-10 flex flex-col items-center justify-center h-full px-6 ${phase === "exiting" ? "animate-hero-exit" : ""
+            }`}
         >
           <h1
             className="font-[family-name:var(--font-cinzel)] text-4xl sm:text-5xl md:text-6xl font-bold text-white text-center mb-3 animate-fade-in-up"
@@ -185,18 +184,17 @@ export default function Home() {
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleStart();
               }}
-              placeholder={`"hot takes about AI" or "people looking for jobs"`}
+              placeholder={`AI hot takes, cute pets, sports news...`}
               className="flex-1 px-5 py-3.5 rounded-xl bg-white/[0.08] border border-white/[0.15] text-white placeholder-white/25 text-base focus:outline-none focus:border-[#0085ff]/50 focus:bg-white/[0.1] transition-all backdrop-blur-sm"
               autoFocus
             />
             <button
               onClick={handleStart}
               disabled={!prompt.trim()}
-              className={`px-8 py-3.5 rounded-xl text-white font-semibold text-base transition-all cursor-pointer ${
-                prompt.trim()
-                  ? "bg-[#0085ff] hover:bg-[#0070dd] animate-glow-pulse"
+              className={`px-10 py-3.5 rounded-xl text-white font-bold text-lg tracking-wide transition-all cursor-pointer ${prompt.trim()
+                  ? "bg-[#1a9fff] hover:bg-[#0090ff] animate-glow-pulse border border-white/30 shadow-[0_0_24px_rgba(0,144,255,0.45)]"
                   : "bg-white/[0.06] opacity-30 cursor-not-allowed"
-              }`}
+                }`}
             >
               Start
             </button>

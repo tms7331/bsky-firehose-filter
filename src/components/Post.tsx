@@ -2,12 +2,19 @@
 
 import { useEffect, useState } from "react";
 
+export interface PostImage {
+  alt: string;
+  thumb: string;
+  aspectRatio?: { width: number; height: number };
+}
+
 export interface FilteredPost {
   post: {
     text: string;
     createdAt: string;
     uri: string;
     cid: string;
+    images?: PostImage[];
   };
   author: {
     did: string;
@@ -98,6 +105,39 @@ export function Post({
           <p className="mt-0.5 text-[15px] leading-[1.4] text-gray-900 dark:text-gray-100 whitespace-pre-wrap break-words">
             {post.text}
           </p>
+
+          {/* Images */}
+          {post.images && post.images.length > 0 && (
+            <div
+              className={`mt-2 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700/50 ${
+                post.images.length === 1
+                  ? ""
+                  : "grid grid-cols-2 gap-0.5"
+              }`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {post.images.map((img, idx) => (
+                <a
+                  key={idx}
+                  href={img.thumb}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={img.thumb}
+                    alt={img.alt}
+                    title={img.alt || undefined}
+                    className={`w-full object-cover hover:opacity-90 transition-opacity ${
+                      post.images!.length === 1
+                        ? "max-h-[400px]"
+                        : "aspect-square"
+                    }`}
+                    loading="lazy"
+                  />
+                </a>
+              ))}
+            </div>
+          )}
 
           {/* Action bar */}
           <div className="flex items-center gap-10 mt-2 -ml-1">
